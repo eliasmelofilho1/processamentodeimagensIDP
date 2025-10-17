@@ -1,0 +1,34 @@
+clear; clc;
+
+// Carregar e converter para escala de cinza
+img = imread('imagem.jpg');
+img_gray = rgb2gray(img);
+
+// Filtro de Média (Average Filter)
+kernel_media = ones(5,5) / 25;
+img_media = imfilter(img_gray, kernel_media);
+
+// Filtro Gaussiano
+sigma = 2;
+kernel_gauss = fspecial('gaussian', [5 5], sigma);
+img_gauss = imfilter(img_gray, kernel_gauss);
+
+// Filtro de Mediana (remove ruído sal e pimenta)
+img_mediana = medfilt2(img_gray, [5 5]);
+
+// Adicionar ruído para testar
+img_ruido = imnoise(img_gray, 'salt & pepper', 0.05);
+
+// Aplicar filtros na imagem com ruído
+img_ruido_media = imfilter(img_ruido, kernel_media);
+img_ruido_gauss = imfilter(img_ruido, kernel_gauss);
+img_ruido_mediana = medfilt2(img_ruido, [5 5]);
+
+// Visualizar resultados
+figure(1);
+subplot(2,3,1); imshow(img_gray); title('Original');
+subplot(2,3,2); imshow(img_media); title('Filtro Média');
+subplot(2,3,3); imshow(img_gauss); title('Filtro Gaussiano');
+subplot(2,3,4); imshow(img_ruido); title('Com Ruído');
+subplot(2,3,5); imshow(img_ruido_gauss); title('Gauss (ruído)');
+subplot(2,3,6); imshow(img_ruido_mediana); title('Mediana (ruído)');
